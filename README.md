@@ -67,7 +67,7 @@ cmake -DWITH_OPENMP=OFF ../
 Additionally, the segmentation process can be observed by using the VISUAL_MODE=ON flag in cmake.
 *If the project is built with VISUAL_MODE=ON it will automatically set WITH_OPENMP=OFF.*
 ```
-cmake -DVISUAL_MODE=ON ../
+cmake -DWITH_VISUAL=ON ../
 ```
 
 #### Quick start
