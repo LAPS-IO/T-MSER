@@ -49,17 +49,14 @@ namespace fs = std::filesystem;
 
 bool containExt(const std::string s, std::string arr[], int len) {
     for (int i = 0; i < len; i++) {
-        if(s == arr[i]) {
-            return true;
-        }
+        if(s == arr[i]) return true;
     }
     return false;
 }
 
 bool isInt(std::string str) {
     for (int i = 0; i < str.length(); i++) {
-        if (! isdigit(str[i]))
-            return false;
+        if (!isdigit(str[i])) return false;
     }
     return true;
 }
@@ -123,9 +120,7 @@ void drawHistogram(cv::Mat& hist) {
     int bin_w = cvRound((double)hist_w / histSize);
 
     cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
-
-    cv::normalize(hist, hist, 0, histImage.rows, cv::NORM_MINMAX, -1,
-                  cv::Mat());
+    cv::normalize(hist, hist, 0, histImage.rows, cv::NORM_MINMAX, -1, cv::Mat());
 
     for (int i = 1; i < histSize; i++) { 
         cv::line(
@@ -153,9 +148,7 @@ void segmentImage(const cv::Mat& img, cv::Mat& imgCorrect, std::vector<cv::Rect>
     #if defined(WITH_VISUAL)
     cv::imshow("viewer", imgCorrect);
     cv::waitKey(0);
-    #endif
 
-    #if defined(WITH_VISUAL)
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::cout << "Flatfield time: " << elapsed_seconds.count() << "s\n";    
@@ -170,7 +163,8 @@ void segmentImage(const cv::Mat& img, cv::Mat& imgCorrect, std::vector<cv::Rect>
         cv::Mat imgPreprocess;
         preprocess(imgCorrect, imgPreprocess, 1);
         mser(imgPreprocess, bboxes, options.minArea, options.maxArea, options.delta, options.variation, options.epsilon);
-    } else if (imgSNR > options.signalToNoise * .75) {
+    }
+    else if (imgSNR > options.signalToNoise * .75) {
 
         // Create a mask that includes all of the regions of the image with
         // the darkest pixels which MSER method can be performed on.
@@ -220,7 +214,8 @@ void segmentImage(const cv::Mat& img, cv::Mat& imgCorrect, std::vector<cv::Rect>
         #endif
 
         mser(imgCorrectMask, bboxes, options.minArea, options.maxArea, options.delta, options.variation, options.epsilon);
-    } else {
+    }
+    else {
         contourBbox(imgCorrect, bboxes, 90, options.minArea, options.maxArea, options.epsilon);
     }
 }
@@ -242,11 +237,9 @@ void contourBbox(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int threshol
 	cv::cvtColor(img, imgContours, cv::COLOR_GRAY2RGB);
     #endif
 
-    for(int i=0; i<contours.size(); i++){
+    for (int i = 0; i < contours.size(); i++){
         cv::Rect bbox = cv::boundingRect(contours[i]);
-        if (bbox.area() < minArea || bbox.area() > maxArea)
-             continue;
-
+        if (bbox.area() < minArea || bbox.area() > maxArea) continue;
         bboxes.push_back(bbox);
 
         #if defined(WITH_VISUAL)
@@ -270,9 +263,7 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
 	std::string frameDir = imgDir + "/frame/";
 
     fs::create_directory(correctCropDir);
-    if ( options.fullOutput ) {
-        fs::create_directory(frameDir);
-    }
+    if (options.fullOutput) fs::create_directory(frameDir);
 
     // Save image with bounding boxes
 	cv::Mat imgBboxes;
@@ -284,8 +275,7 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
         float area = bboxes[k].area();
 
         // Determine if the bbox is too large or small
-        if (area < options.minArea || area > options.maxArea)
-            continue;
+        if (area < options.minArea || area > options.maxArea) continue;
 
         float perimeter = bboxes[k].height + bboxes[k].width * 2.0;
         float x = bboxes[k].x;
@@ -301,20 +291,19 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
 
         // Determine if box is irregularly shapped (Abnormally long and thin)
         int hwRatio = 10;
-        if (width < 30 && height > hwRatio * width)
-            continue;
+        if (width < 30 && height > hwRatio * width) continue;
 
         if (height > width) {
             major = height;
             minor = width;
-        } else {
+        }
+        else {
             major = width;
             minor = height;
         }
 
         // Determine if the bbox is too large or small
-        if (area < options.minArea || area > options.maxArea)
-            continue;
+        if (area < options.minArea || area > options.maxArea) continue;
 
         // Re-scale the crop of the image after getting the measurement data written to a file
         cv::Rect scaledBbox = rescaleRect(bboxes[k], 1.2);
@@ -330,8 +319,7 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
 
         // Write the image data to the measurement file
         // Format: img,area,major,minor,perimeter,x,y,mean,height
-        #pragma omp critical(write)
-        {
+        #pragma omp critical(write) {
             measurePtr << correctImgFile << "," << area << "," << major << "," << minor << "," 
              << perimeter << "," << x << "," << y << "," << mean << "," << height << std::endl; 
         }
@@ -355,8 +343,7 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
     }
 }
 
-cv::Rect rescaleRect(const cv::Rect& rect, float scale)
-{
+cv::Rect rescaleRect(const cv::Rect& rect, float scale) {
     float scaleWidth = rect.width * scale - rect.width;
     float scaleHeight = rect.height * scale - rect.height;
     cv::Rect scaledRect(rect.x - scaleWidth / 2, rect.y - scaleHeight / 2, 
@@ -365,11 +352,8 @@ cv::Rect rescaleRect(const cv::Rect& rect, float scale)
     return scaledRect;
 } 
 
-void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps)
-{ 
-    if (rectList.empty()) {
-        return;
-    }
+void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps) { 
+    if (rectList.empty()) return;
 
     // Third argument of partion is a predicate operator that looks for a method of the class
     // that will return true when elements are apart of the same partition
@@ -390,7 +374,7 @@ void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps)
     }
 
     bool bounds = true, intersect = false, max = false, _union = false;
-    if(bounds) {
+    if (bounds) {
         for (int i = 0; i < nlabels; i++) {
             int cls = labels[i];
             if (rectList[i].width > rrects[cls].width) {
@@ -455,14 +439,11 @@ void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int ma
     // Create an image with all of the bboxes on it from MSER
 	cv::Mat imgBboxes;
 	cv::cvtColor(img, imgBboxes, cv::COLOR_GRAY2RGB);
-	for(int i = 0; i < bboxes.size(); i++) {
+	for (int i = 0; i < bboxes.size(); i++) {
 	    cv::rectangle(imgBboxes, bboxes[i], cv::Scalar(0, 0, 255));
 	}
     cv::imshow("viewer", imgBboxes);
     cv::waitKey(0);
-    #endif
-
-    #if defined(WITH_VISUAL)
     auto start = std::chrono::steady_clock::now();
     #endif
 
@@ -472,7 +453,7 @@ void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int ma
 
     #if defined(WITH_VISUAL)
     auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "Group Rect time: " << elapsed_seconds.count() << "s\n";    
     #endif
 }
@@ -495,7 +476,7 @@ float SNR(const cv::Mat& img) {
     cv::Mat imgClean, imgNoise;
     cv::medianBlur(imgHeq, imgClean, 3);
     imgNoise = imgHeq - imgClean;
-    double SNR = 20*( cv::log(cv::norm(imgClean,cv::NORM_L2) / cv::norm(imgNoise,cv::NORM_L2)) );
+    double SNR = 20 * (cv::log(cv::norm(imgClean,cv::NORM_L2) / cv::norm(imgNoise,cv::NORM_L2)));
 
     return SNR;
 }

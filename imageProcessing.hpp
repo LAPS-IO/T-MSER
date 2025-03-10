@@ -60,8 +60,7 @@ public:
         double deltax = eps * (r1.width + r2.width) * 0.5;
         double deltay = eps * (r1.height + r2.height) * 0.5;
 
-        return std::abs(x1 - x2) < deltax &&
-            std::abs(y1 - y2) < deltay; 
+        return std::abs(x1 - x2) < deltax && std::abs(y1 - y2) < deltay;
     }
     double eps;
 };
@@ -208,8 +207,7 @@ void preprocess(const cv::Mat& src, cv::Mat& dst, float erosion_size);
  * @param eps The percent threshold to count boxes as overlapping.
  *
  */
-void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, 
-    double eps);
+void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps);
 
 /**
  * Helper function to access the MSER method easier.
