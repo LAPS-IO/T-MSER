@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
                 std::cerr << options.input << " does not exist." << std::endl;
                 return 1;
             }
-            i+=2;
+            i += 2;
         } else if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--output-directory") == 0) {
             options.outputDirectory = argv[i + 1];
             try {
@@ -134,8 +134,8 @@ int main(int argc, char **argv) {
             i+=2;
 		} else if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--signal-to-noise") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Signal To Noise ration must be an integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Signal To Noise ration must be an integer." << std::endl;
                 return 1;
             }
             options.signalToNoise = std::stoi(argv[i+1]);
@@ -143,109 +143,108 @@ int main(int argc, char **argv) {
 		} else if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--num-concatenate") == 0) {
             // Validate the input type
             if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. The number of frames to concatenate must be an integer." << std::endl;
+                std::cerr << argv[i + 1] << " is not a valid input. The number of frames to concatenate must be an integer." << std::endl;
                 return 1;
             }
             options.numConcatenate = std::stoi(argv[i+1]);
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-M") == 0 || strcmp(argv[i], "--maxArea") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Maximum must be an integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Maximum must be an integer." << std::endl;
                 return 1;
             }
-            options.maxArea = std::stoi(argv[i+1]);
-            i+=2;
+            options.maxArea = std::stoi(argv[i + 1]);
+            i += 2;
 		} else if (strcmp(argv[i], "-m") == 0 || strcmp(argv[i], "--minArea") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Minimum must be an integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Minimum must be an integer." << std::endl;
                 return 1;
             }
             options.minArea = std::stoi(argv[i+1]);
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--epsilon") == 0) {
             // Validate the input type
-            options.epsilon = std::stof(argv[i+1]); // FIXME: may throw error if not int
+            options.epsilon = std::stof(argv[i + 1]); // FIXME: may throw error if not int
 
             if (options.epsilon < 0) {
                 std::cerr << options.epsilon << " is not a valid input. Epsilon must be a non-negative float." << std::endl;
                 return 1;
             }
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--delta") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Delta must be an integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Delta must be an integer." << std::endl;
                 return 1;
             }
             options.delta = std::stoi(argv[i+1]);
-            i+=2;
-
+            i += 2;
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--variation") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Variation must be an integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Variation must be an integer." << std::endl;
                 return 1;
             }
             options.variation = std::stoi(argv[i+1]);
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--threshold") == 0) {
             // Validate the input type
-            options.threshold = std::stof(argv[i+1]); // FIXME: may throw error if not int
+            options.threshold = std::stof(argv[i + 1]); // FIXME: may throw error if not int
 
             if (options.threshold < 0 && options.threshold > 255) {
                 std::cerr << options.threshold << " is not a valid input. Threshold must be between 0 and 255 inclusive" << std::endl;
                 return 1;
             }
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--outlier-percent") == 0) {
             // Validate the input type
-            options.outlierPercent = std::stof(argv[i+1]); // FIXME: may throw error if not int
+            options.outlierPercent = std::stof(argv[i + 1]); // FIXME: may throw error if not int
 
             if (options.outlierPercent > 1 or options.outlierPercent < 0) {
                 std::cerr << options.outlierPercent << " is not a valid input. Outlier percent must be a float between 0 and 1." << std::endl;
                 return 1;
             }
-            i+=2;
+            i += 2;
 		} else if (strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--full-output") == 0) {
             // If flag exists then add output
             options.fullOutput = true; 
 
-            i+=1;
+            i += 1;
 		} else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--left-crop") == 0) {
             // Validate the input type
             if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Left crop must be a positive integer." << std::endl;
+                std::cerr << argv[i + 1] << " is not a valid input. Left crop must be a positive integer." << std::endl;
                 return 1;
             } else if (std::stoi(argv[i+1]) < 0) {
-                std::cerr << argv[i+1] << " is not a valid input. Left crop must be a positive integer." << std::endl;
+                std::cerr << argv[i + 1] << " is not a valid input. Left crop must be a positive integer." << std::endl;
                 return 1;
             }
 
-            options.left = std::stoi(argv[i+1]);
-            i+=2;
+            options.left = std::stoi(argv[i + 1]);
+            i += 2;
 		} else if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--right-crop") == 0) {
             // Validate the input type
-            if ( !isInt(argv[i+1]) ) {
-                std::cerr << argv[i+1] << " is not a valid input. Right crop must be a positive integer." << std::endl;
+            if ( !isInt(argv[i + 1]) ) {
+                std::cerr << argv[i + 1] << " is not a valid input. Right crop must be a positive integer." << std::endl;
                 return 1;
-            } else if (std::stoi(argv[i+1]) < 0) {
-                std::cerr << argv[i+1] << " is not a valid input. Right crop must be a positive integer." << std::endl;
+            } else if (std::stoi(argv[i + 1]) < 0) {
+                std::cerr << argv[i + 1] << " is not a valid input. Right crop must be a positive integer." << std::endl;
                 return 1;
             }
-            options.right = std::stoi(argv[i+1]);
-            i+=2;
+            options.right = std::stoi(argv[i + 1]);
+            i += 2;
 		} else {
             // Display invalid option message
             std::cerr << argv[0] << ": invalid option \'" << argv[i] << "\'" <<
                 "\nTry \'" << argv[0] << " --help\' for more information." << std::endl;
 
             return 1;
-            i+=2;
+            i += 2;
 		}
 	}
-    if ( options.input == "" ) {
+    if (options.input == "") {
         std::cerr << "Must have either an input directory or an input file for segmentation to be run on" << std::endl;
         return 1;
     }
@@ -266,7 +265,7 @@ int main(int argc, char **argv) {
 
             std::string ext = file.extension();
 
-            std::string valid_ext[] = {".avi", ".mp4", ".png"};
+            std::string valid_ext[] = {".avi", ".mp4", ".png", ".JPG"};
             int len = sizeof(valid_ext)/sizeof(valid_ext[0]);
             if (!containExt(ext, valid_ext, len)) {
                 continue;
@@ -284,7 +283,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    for (int i=0; i<numFiles; i++) {
+    for (int i = 0; i < numFiles; i++) {
         fs::path file = files[i];
         std::string fileName = file.stem();
 
@@ -298,7 +297,7 @@ int main(int argc, char **argv) {
         // This is a temporary solution to determine if the input file is an image or video 
         // cv::Mat testFrame;
         std::string ext = file.extension();
-        bool validImage = (ext == ".png");
+        bool validImage = (ext == ".png") || (ext == ".JPG");
 
         if (!validImage) { // If the file is a video
             cv::VideoCapture cap(file.string());
@@ -311,8 +310,7 @@ int main(int argc, char **argv) {
             int totalFrames = cap.get(cv::CAP_PROP_FRAME_COUNT);
 
             #pragma omp parallel for
-            for (int j=0; j<totalFrames-1; j++) 
-            {   
+            for (int j = 0; j < totalFrames - 1; j++) {   
 	        	cv::Mat imgGray;
                 #pragma omp critical(getImage)
                 {
@@ -327,7 +325,7 @@ int main(int argc, char **argv) {
 
                 int fill = fillSides(imgGray, options.left, options.right);
                 if (fill != 0) {
-                    exit( 1 );
+                    exit(1);
                 }
 
                 cv::Mat imgCorrect;
@@ -358,7 +356,7 @@ int main(int argc, char **argv) {
 
             int fill = fillSides(imgGray, options.left, options.right);
             if (fill != 0) {
-                exit( 1 );
+                exit(1);
             }
             
             // Segment the grayscale image and save its' crops.
@@ -371,7 +369,6 @@ int main(int argc, char **argv) {
             imgGray.release();
             imgCorrect.release();
         }
-
         measurePtr.close();
     }
     return 0;

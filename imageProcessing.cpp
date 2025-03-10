@@ -48,7 +48,7 @@
 namespace fs = std::filesystem;
 
 bool containExt(const std::string s, std::string arr[], int len) {
-    for (int i=0; i<len; i++) {
+    for (int i = 0; i < len; i++) {
         if(s == arr[i]) {
             return true;
         }
@@ -67,14 +67,12 @@ bool isInt(std::string str) {
 std::string convertInt(int number, int fill) {
 	std::stringstream ss; //create a stringstream
 	ss << std::setw(fill) << std::setfill('0') << number; // add number to the stream
-
 	return ss.str(); //return a string with the contents of the stream
 }
 
 void getFrame(cv::VideoCapture cap, cv::Mat& img, int n) {
     cv::Mat frame;
-
-    if(n == 1) {
+    if (n == 1) {
         cap.read(frame);
         cv::cvtColor(frame, img, cv::COLOR_RGB2GRAY);
     }
@@ -82,7 +80,7 @@ void getFrame(cv::VideoCapture cap, cv::Mat& img, int n) {
         std::cerr << "Not yet supported, can only use n=1" << std::endl;
         exit(3);
         cv::Mat *frameArray = new cv::Mat[n];
-        for(int k=0; k<n; k++){
+        for(int k = 0; k < n; k++){
             cap.read(frame);
             if (frame.empty()) {
                 std::cerr << "Frame is empty in get frame call, skipping" << std::endl;
@@ -91,7 +89,6 @@ void getFrame(cv::VideoCapture cap, cv::Mat& img, int n) {
             cv::cvtColor(frame, frameArray[k], cv::COLOR_RGB2GRAY);
         }
         cv::vconcat(frameArray, n, img);
-
         // FIXME: need to release memory from the frameArray
     }
     frame.release();
@@ -130,10 +127,10 @@ void drawHistogram(cv::Mat& hist) {
     cv::normalize(hist, hist, 0, histImage.rows, cv::NORM_MINMAX, -1,
                   cv::Mat());
 
-    for( int i = 1; i < histSize; i++ ) { 
+    for (int i = 1; i < histSize; i++) { 
         cv::line(
             histImage,
-            cv::Point(bin_w * (i-1), hist_h - cvRound(hist.at<float>(i-1))),
+            cv::Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
             cv::Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
             cv::Scalar(255, 0, 0), 2, 8, 0);
     }
@@ -194,7 +191,7 @@ void segmentImage(const cv::Mat& img, cv::Mat& imgCorrect, std::vector<cv::Rect>
 
             // create mask based on darkest regions
             cv::Rect maskRect(0, 0, mask.cols, mask.rows); // use maskRect to make sure box doesn't go off the edge
-            for(int i=0; i<contours.size(); i++){
+            for(int i = 0; i < contours.size(); i++){
                 cv::Rect boundRect = cv::boundingRect(contours[i]);
                 if (boundRect.area() > options.maxArea)
                       continue;
@@ -209,9 +206,7 @@ void segmentImage(const cv::Mat& img, cv::Mat& imgCorrect, std::vector<cv::Rect>
         }
         if (mesh) {
             cv::Point anchor = cv::Point(-1, -1); // default anchor value
-            cv::Mat openKernel = getStructuringElement( cv::MORPH_ELLIPSE,
-                        cv::Size(4, 4),
-                        anchor);
+            cv::Mat openKernel = getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(4, 4), anchor);
             cv::morphologyEx(imgThresh, imgThresh, cv::MORPH_HITMISS, openKernel);
             cv::erode(imgThresh, imgThresh, openKernel);
             cv::bitwise_not(imgThresh, mask);
@@ -284,12 +279,12 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
 	cv::cvtColor(imgCorrect, imgBboxes, cv::COLOR_GRAY2RGB);
 
 	int numBboxes = bboxes.size();
-    for (int k=0; k<numBboxes; k++) {
+    for (int k = 0; k < numBboxes; k++) {
         // Get measurement data
         float area = bboxes[k].area();
 
         // Determine if the bbox is too large or small
-        if ( area < options.minArea || area > options.maxArea )
+        if (area < options.minArea || area > options.maxArea)
             continue;
 
         float perimeter = bboxes[k].height + bboxes[k].width * 2.0;
@@ -306,10 +301,10 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
 
         // Determine if box is irregularly shapped (Abnormally long and thin)
         int hwRatio = 10;
-        if ( width < 30 && height > hwRatio * width )
+        if (width < 30 && height > hwRatio * width)
             continue;
 
-        if ( height > width ) {
+        if (height > width) {
             major = height;
             minor = width;
         } else {
@@ -318,7 +313,7 @@ void saveCrops(const cv::Mat& img, const cv::Mat& imgCorrect, std::vector<cv::Re
         }
 
         // Determine if the bbox is too large or small
-        if ( area < options.minArea || area > options.maxArea )
+        if (area < options.minArea || area > options.maxArea)
             continue;
 
         // Re-scale the crop of the image after getting the measurement data written to a file
@@ -372,8 +367,7 @@ cv::Rect rescaleRect(const cv::Rect& rect, float scale)
 
 void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps)
 { 
-    if( rectList.empty() )
-    {
+    if (rectList.empty()) {
         return;
     }
 
@@ -399,27 +393,25 @@ void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps)
     if(bounds) {
         for (int i = 0; i < nlabels; i++) {
             int cls = labels[i];
-            if (rectList[i].width > rrects[cls].width)
-            {
+            if (rectList[i].width > rrects[cls].width) {
                 rrects[cls].width = rectList[i].width;
                 rrects[cls].x = rectList[i].x;
             }
-            if (rectList[i].height > rrects[cls].height)
-            {
+            if (rectList[i].height > rrects[cls].height) {
                 rrects[cls].height = rectList[i].height;
                 rrects[cls].y = rectList[i].y;
             }
             rweights[cls]++;
         }
     }
-    if(_union) {
+    if (_union) {
         for (int i = 0; i < nlabels; i++) {
             int cls = labels[i];
             rrects[cls] = rrects[cls] | rectList[i];
             rweights[cls]++;
         }
     }
-    if(max) { // FIXME not functioning properly
+    if (max) { // FIXME not functioning properly
         for (int i = 0; i < nlabels; i++) {
             int cls = labels[i]; // get the class label for the image
             float br_x = rectList[i].br().x;
@@ -447,15 +439,14 @@ void groupRect(std::vector<cv::Rect>& rectList, int groupThreshold, double eps)
 
     rectList.clear();
 
-    for (int i = 0; i < nclasses; i++)
-    {
+    for (int i = 0; i < nclasses; i++) {
         if (rweights[i] >= groupThreshold) {
             rectList.push_back(rrects[i]);
         }
     }
 }
 
-void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int maxArea, int delta, int maxVariation, float eps){
+void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int maxArea, int delta, int maxVariation, float eps) {
     cv::Ptr<cv::MSER> detector = cv::MSER::create(delta, minArea, maxArea, maxVariation); 
 	std::vector<std::vector<cv::Point>> msers;
 	detector->detectRegions(img, msers, bboxes);
@@ -464,7 +455,7 @@ void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int ma
     // Create an image with all of the bboxes on it from MSER
 	cv::Mat imgBboxes;
 	cv::cvtColor(img, imgBboxes, cv::COLOR_GRAY2RGB);
-	for(int i=0;i<bboxes.size();i++){
+	for(int i = 0; i < bboxes.size(); i++) {
 	    cv::rectangle(imgBboxes, bboxes[i], cv::Scalar(0, 0, 255));
 	}
     cv::imshow("viewer", imgBboxes);
@@ -489,7 +480,7 @@ void mser(const cv::Mat& img, std::vector<cv::Rect>& bboxes, int minArea, int ma
 void preprocess(const cv::Mat& src, cv::Mat& dst, float erosion_size) {
     // Perform image pre processing
     cv::Mat erodeElement = getStructuringElement( cv::MORPH_ERODE,
-    cv::Size(2*erosion_size+1, 2*erosion_size+1),
+    cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
     cv::Point(erosion_size, erosion_size));
     
     cv::morphologyEx(src, dst, cv::MORPH_OPEN, erodeElement); // open is a combination of erosion and dialation
@@ -535,7 +526,6 @@ int fillSides(cv::Mat& img, int left, int right, int fill) {
     for (int i = img.cols - right; i < img.cols; i++) {
         img.col(i).setTo(fill);
     }
-    
     return 0;
 }
 
@@ -545,15 +535,15 @@ void trimMean(const cv::Mat& img, cv::Mat& tMean, float percent) {
 	int height = img.rows, width = img.cols;
 
     // Get a subset of the matrix entries so that they can be averaged
-	int k = round(img.rows*percent/2); // Calculate the number of outlier elements
+	int k = round(img.rows * percent / 2); // Calculate the number of outlier elements
     
     // Create a mask with 0's for the top and bottom k elements
 	cv::Mat maskCol = cv::Mat::ones(height, 1, CV_8UC1);
-    for (int cnt1=0; cnt1<k; cnt1++) {
+    for (int cnt1 = 0; cnt1 < k; cnt1++) {
 	    maskCol.at<int8_t>(cnt1,0) = 0;
     }
-    for (int cnt1=(height-k); cnt1<height; cnt1++) {
-	    maskCol.at<int8_t>(cnt1,0) = 0;
+    for (int cnt1 = (height - k); cnt1 < height; cnt1++) {
+	    maskCol.at<int8_t>(cnt1, 0) = 0;
     }
     cv::Mat mask;
     cv::repeat(maskCol,1,width,mask);
